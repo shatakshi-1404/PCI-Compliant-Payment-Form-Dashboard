@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment Portal | PCI-Compliant Demo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1a4f72;
+            --secondary: #3a7bb8;
+            --accent: #ff6b6b;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --gray: #6c757d;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background-color: #f5f7f9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .security-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 1.2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+            background-color: rgba(26, 79, 114, 0.05);
+        }
+
+        .tab:hover:not(.active) {
+            background-color: #f1f1f1;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(58, 123, 184, 0.2);
+        }
+
+        .input-group i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 1.5rem;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .security-note {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--secondary);
+            padding: 1rem;
+            margin-top: 2rem;
+            border-radius: 4px;
+        }
+
+        .security-note h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        .stat-card i {
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .stat-card h3 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: var(--gray);
+            font-weight: 600;
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+
+        .transaction-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .transaction-table th, .transaction-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .transaction-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .transaction-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .status {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status.approved {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: var(--success);
+        }
+
+        .status.declined {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: var(--danger);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .disclaimer {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: var(--border-radius);
+            padding: 1rem;
+            margin-bottom: 2rem;
+            color: #856404;
+        }
+
+        .disclaimer h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+        }
+
+        /* Accessibility improvements */
+        a:focus, button:focus, input:focus, select:focus {
+            outline: 2px solid var(--secondary);
+            outline-offset: 2px;
+        }
+
+        .high-contrast {
+            background-color: black;
+            color: white;
+        }
+
+        .high-contrast .card, 
+        .high-contrast .stat-card,
+        .high-contrast .tab {
+            background-color: #222;
+            color: white;
+        }
+
+        .high-contrast .input-group input,
+        .high-contrast .input-group select {
+            background-color: #333;
+            color: white;
+            border-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-shield-alt"></i>
+                    <h1>Secure Payment Portal</h1>
+                </div>
+                <div class="security-badge">
+                    <i class="fas fa-lock"></i>
+                    <span>PCI-DSS Compliant Demo</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="disclaimer">
+            <h3><i class="fas fa-exclamation-circle"></i> Important Disclaimer</h3>
+            <p>This is a demonstration only. No real payments are processed. In a real implementation, sensitive card data would be handled by a PCI-DSS compliant payment gateway (like Stripe or Braintree) and would never touch our servers.</p>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('payment')">
+                <i class="fas fa-credit-card"></i> Payment Form
+            </div>
+            <div class="tab" onclick="switchTab('dashboard')">
+                <i class="fas fa-chart-bar"></i> Merchant Dashboard
+            </div>
+            <div class="tab" onclick="switchTab('accessibility')">
+                <i class="fas fa-universal-access"></i> Accessibility
+            </div>
+        </div>
+
+        <div id="payment-tab" class="tab-content active">
+            <div class="card">
+                <h2><i class="fas fa-credit-card"></i> Payment Information</h2>
+                
+                <form id="payment-form">
+                    <div class="form-group">
+                        <label for="cardholder">Cardholder Name</label>
+                        <div class="input-group">
+                            <input type="text" id="cardholder" placeholder="John Doe" aria-required="true">
+                            <i class="fas fa-user"></i>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cardnumber">Card Number</label>
+                        <div class="input-group">
+                            <input type="text" id="cardnumber" placeholder="1234 5678 9012 3456" aria-required="true" maxlength="19">
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="expiry">Expiration Date</label>
+                                <div class="input-group">
+                                    <input type="text" id="expiry" placeholder="MM/YY" aria-required="true">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="cvv">CVV Security Code</label>
+                                <div class="input-group">
+                                    <input type="text" id="cvv" placeholder="123" aria-required="true" maxlength="4">
+                                    <i class="fas fa-question-circle" title="3 or 4-digit code on the back of your card"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">Payment Amount ($)</label>
+                        <div class="input-group">
+                            <input type="number" id="amount" placeholder="100.00" aria-required="true" min="1" step="0.01">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn">
+                        <i class="fas fa-lock"></i> Submit Secure Payment
+                    </button>
+                </form>
+
+                <div class="security-note">
+                    <h3><i class="fas fa-shield-alt"></i> Security & Compliance</h3>
+                    <p>This form follows PCI-DSS security guidelines including:</p>
+                    <ul>
+                        <li>No sensitive payment data is stored on our servers</li>
+                        <li>Form inputs are validated according to PCI standards</li>
+                        <li>All communications are encrypted using TLS 1.2+</li>
+                        <li>Regular security audits and penetration testing</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboard-tab" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-chart-line"></i> Transaction Overview</h2>
+                
+                <div class="stats">
+                    <div class="stat-card">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <h3>$12,458</h3>
+                        <p>Total Processed</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>92%</h3>
+                        <p>Approval Rate</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-exchange-alt"></i>
+                        <h3>184</h3>
+                        <p>Total Transactions</p>
+                    </div>
+                    <div class="stat-card">
+                        <i class="fas fa-clock"></i>
+                        <h3>0.8s</h3>
+                        <p>Avg. Processing Time</p>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="transactionChart"></canvas>
+                </div>
+
+                <h2><i class="fas fa-list"></i> Recent Transactions</h2>
+                <table class="transaction-table" aria-label="Recent transactions">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Date</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#TX10078</td>
+                            <td>Oct 12, 2023</td>
+                            <td>John Smith</td>
+                            <td>$125.00</td>
+                            <td><span class="status approved">Approved</span></td>
+                        </tr>
+                        <tr>
+                            <td>#TX10077</td>
+                            <td>Oct 12, 2023</td>
+                            <td>Emma Johnson</td>
+                            <td>$89.50</td>
+                            <td><span class="status approved">Approved</span></td>
+                        </tr>
+                        <tr>
+                            <td>#TX10076</td>
+                            <td>Oct 11, 2023</td>
+                            <td>Robert Brown</td>
+                            <td>$215.00</td>
+                            <td><span class="status declined">Declined</span></td>
+                        </tr>
+                        <tr>
+                            <td>#TX10075</td>
+                            <td>Oct 11, 2023</td>
+                            <td>Sarah Williams</td>
+                            <td>$52.75</td>
+                            <td><span class="status approved">Approved</span></td>
+                        </tr>
+                        <tr>
+                            <td>#TX10074</td>
+                            <td>Oct 11, 2023</td>
+                            <td>Michael Davis</td>
+                            <td>$149.99</td>
+                            <td><span class="status approved">Approved</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="accessibility-tab" class="tab-content">
+            <div class="card">
+                <h2><i class="fas fa-universal-access"></i> Accessibility Features</h2>
+                
+                <p>This payment form has been designed with accessibility in mind and follows WCAG 2.1 guidelines:</p>
+                
+                <div class="row">
+                    <div class="col">
+                        <h3><i class="fas fa-keyboard"></i> Keyboard Navigation</h3>
+                        <p>All form elements can be accessed using the keyboard alone. The tab order follows a logical sequence.</p>
+                    </div>
+                    <div class="col">
+                        <h3><i class="fas fa-palette"></i> Color Contrast</h3>
+                        <p>Text has sufficient contrast ratio (at least 4.5:1) for users with visual impairments.</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <h3><i class="fas fa-tag"></i> ARIA Labels</h3>
+                        <p>All interactive elements have appropriate ARIA labels for screen reader users.</p>
+                    </div>
+                    <div class="col">
+                        <h3><i class="fas fa-text-height"></i> Text Scaling</h3>
+                        <p>The interface remains usable when text is scaled up to 200%.</p>
+                    </div>
+                </div>
+
+                <button class="btn" onclick="toggleContrast()">
+                    <i class="fas fa-adjust"></i> Toggle High Contrast Mode
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            <p>This is a demonstration project only. No real payments are processed.</p>
+            <p>© 2023 Secure Payment Portal Demo | PCI-DSS Compliance Demonstration</p>
+        </footer>
+    </div>
+
+    <script>
+        // Switch between tabs
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.currentTarget.classList.add('active');
+            document.getElementById(tabName + '-tab').classList.add('active');
+        }
+
+        // Format card number input
+        document.getElementById('cardnumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 0) {
+                value = value.match(new RegExp('.{1,4}', 'g')).join(' ');
+            }
+            e.target.value = value;
+        });
+
+        // Format expiration date input
+        document.getElementById('expiry').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2) {
+                value = value.substring(0, 2) + '/' + value.substring(2, 4);
+            }
+            e.target.value = value;
+        });
+
+        // Handle form submission
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validate form inputs
+            const cardholder = document.getElementById('cardholder').value;
+            const cardnumber = document.getElementById('cardnumber').value;
+            const expiry = document.getElementById('expiry').value;
+            const cvv = document.getElementById('cvv').value;
+            const amount = document.getElementById('amount').value;
+            
+            if (!cardholder || !cardnumber || !expiry || !cvv || !amount) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (cardnumber.replace(/\s/g, '').length < 16) {
+                alert('Please enter a valid card number');
+                return;
+            }
+            
+            // Simulate payment processing
+            alert('Payment processed successfully! This is a demo - no actual transaction occurred.');
+            
+            // Reset form
+            document.getElementById('payment-form').reset();
+        });
+
+        // Initialize chart
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('transactionChart').getContext('2d');
+            const transactionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Oct 5', 'Oct 6', 'Oct 7', 'Oct 8', 'Oct 9', 'Oct 10', 'Oct 11', 'Oct 12'],
+                    datasets: [{
+                        label: 'Transaction Volume',
+                        data: [18, 25, 22, 30, 27, 26, 24, 32],
+                        borderColor: '#1a4f72',
+                        tension: 0.3,
+                        fill: true,
+                        backgroundColor: 'rgba(26, 79, 114, 0.1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Transactions Last 7 Days',
+                            font: {
+                                size: 16
+                            }
+                        },
+                        legend: {
+                            position: 'bottom'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Transactions'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        // Toggle high contrast mode
+        function toggleContrast() {
+            document.body.classList.toggle('high-contrast');
+        }
+    </script>
+</body>
+</html>
